@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SecretApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1871600684b8ff8dcf1f6857a8c62c526b59eb74")]
 [assembly: System.Reflection.AssemblyProductAttribute("SecretApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SecretApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

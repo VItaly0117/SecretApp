@@ -1,18 +1,21 @@
 ﻿@model Guid
-<div class="card p-4 shadow-sm mx-auto mt-5" style="max-width: 500px;">
-    <div id="lockSection">
-        <h3>🔒 Введіть пароль</h3>
-        <input type="password" id="p" class="form-control mb-2" placeholder="Пароль">
-        <button onclick="viewSecret()" class="btn btn-success w-100">Відкрити</button>
-    </div>
+<section style="display: flex; justify-content: center; padding: 2rem;">
+    <div class="glass-card" style="width: 100%; max-width: 60rem;">
+        <div id="lockSection">
+            <h3 style="font-size: 3.2rem; margin-bottom: 2rem; font-weight: 700;">🔒 Захищено</h3>
+            <p style="font-size: 1.6rem; margin-bottom: 2rem; color: #ccc;">Це повідомлення самознищиться після відкриття.</p>
+            <input type="password" id="p" class="form-control" placeholder="Введіть пароль">
+            <button onclick="viewSecret()" class="btn" style="width: 100%;">Відкрити</button>
+        </div>
 
-    <div id="viewSection" style="display:none;">
-        <div class="alert alert-warning small">Повідомлення видалено з сервера. Ви бачите його востаннє.</div>
-        <h5>Зміст:</h5>
-        <div id="content" class="p-3 bg-light border rounded" style="white-space: pre-wrap;"></div>
-        <a href="/" class="btn btn-outline-primary mt-3">Закрити</a>
+        <div id="viewSection" style="display:none;">
+            <h3 style="font-size: 2.2rem; color: var(--main-color); margin-bottom: 1.5rem;">Зміст:</h3>
+            <div id="content" style="background: rgba(0,0,0,0.2); padding: 2rem; border-radius: 1rem; font-size: 1.6rem; line-height: 1.6; white-space: pre-wrap;"></div>
+            <p style="margin-top: 2rem; color: #ff6b6b; font-size: 1.2rem;">⚠️ Повідомлення видалено з сервера.</p>
+            <a href="/" class="btn" style="margin-top: 2rem; background: var(--second-bg-color); color: white; box-shadow: none;">Закрити</a>
+        </div>
     </div>
-</div>
+</section>
 
 <script>
     async function viewSecret() {
@@ -23,7 +26,7 @@
             body: JSON.stringify(pwd)
         });
 
-        if(!res.ok) return alert("Невірний пароль або посилання вже недійсне.");
+        if(!res.ok) return alert("Невірний пароль або посилання недійсне.");
         const data = await res.json();
 
         try {
@@ -41,6 +44,8 @@
             document.getElementById('content').innerText = new TextDecoder().decode(decrypted);
             document.getElementById('lockSection').style.display = 'none';
             document.getElementById('viewSection').style.display = 'block';
-        } catch(e) { alert("Помилка дешифрування."); }
+        } catch(e) {
+            alert("Помилка дешифрування.");
+        }
     }
 </script>

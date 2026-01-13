@@ -1,59 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+  text-decoration: none;
+  border: none;
+  outline: none;
+  scroll-behavior: smooth;
+}
+
 :root {
-  --bg-color: #0f172a;
-  --card-bg: rgba(30, 41, 59, 0.7);
-  --accent-color: #38bdf8;
-  --accent-glow: rgba(56, 189, 248, 0.3);
-  --text-main: #f1f5f9;
+  --bg-color: #1f242d;
+  --second-bg-color: #323946;
+  --text-color: #fff;
+  --main-color: #519fff;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+html {
+  font-size: 62.5%;
+  overflow-x: hidden;
 }
 
 body {
-  background-color: var(--bg-color);
+  background: var(--bg-color);
+  color: var(--text-color);
+  /* Додаємо легкий градієнт для глибини */
   background-image:
-          radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.15) 0px, transparent 50%),
-          radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
-  color: var(--text-main);
-  font-family: 'Inter', sans-serif;
+          radial-gradient(at 10% 10%, rgba(81, 159, 255, 0.1) 0px, transparent 40%),
+          radial-gradient(at 90% 90%, rgba(139, 92, 246, 0.1) 0px, transparent 40%);
   min-height: 100vh;
 }
 
-.navbar {
-  background: rgba(15, 23, 42, 0.8) !important;
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 2rem 9%;
+  background: rgba(31, 36, 45, 0.8);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  border-bottom: 1px solid var(--glass-border);
 }
 
-.card {
-  background: var(--card-bg);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1.5rem;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-.btn-primary {
-  background-color: var(--accent-color);
-  border: none;
-  box-shadow: 0 0 15px var(--accent-glow);
-  transition: all 0.3s ease;
+.logo {
+  font-size: 2.5rem;
+  color: var(--text-color);
   font-weight: 600;
 }
 
-.btn-primary:hover {
-  background-color: #7dd3fc;
-  transform: translateY(-2px);
-  box-shadow: 0 0 25px var(--accent-glow);
+.navbar a {
+  font-size: 1.7rem;
+  color: var(--text-color);
+  margin-left: 4rem;
+  transition: .3s;
+}
+
+.navbar a:hover {
+  color: var(--main-color);
+}
+
+/* Матова картка */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid var(--glass-border);
+  border-radius: 2rem;
+  padding: 4rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.btn {
+  display: inline-block;
+  padding: 1.2rem 2.8rem;
+  background: var(--main-color);
+  border-radius: 4rem;
+  box-shadow: 0 0 1rem var(--main-color);
+  font-size: 1.6rem;
+  color: var(--bg-color);
+  letter-spacing: .1rem;
+  font-weight: 600;
+  transition: .5s ease;
+  cursor: pointer;
+}
+
+.btn:hover {
+  box-shadow: none;
+  transform: scale(1.02);
 }
 
 .form-control {
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  padding: 1.5rem;
+  font-size: 1.6rem;
   color: white;
-  border-radius: 0.75rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+  transition: 0.3s;
 }
 
 .form-control:focus {
-  background: rgba(15, 23, 42, 0.7);
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px var(--accent-glow);
-  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--main-color);
+}
+
+@keyframes floatImage {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2rem); }
+}
+
+.floating-icon {
+  font-size: 8rem;
+  color: var(--main-color);
+  animation: floatImage 4s ease-in-out infinite;
+  display: inline-block;
 }

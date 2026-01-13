@@ -1,30 +1,35 @@
-﻿<div class="card p-4 shadow-sm mx-auto" style="max-width: 500px;">
-    <h3>Нове повідомлення</h3>
-    <textarea id="txt" class="form-control mb-2" rows="4" placeholder="Текст..."></textarea>
-    <input type="password" id="pwd" class="form-control mb-2" placeholder="Пароль">
-    <button onclick="createSecret()" class="btn btn-primary w-100">Створити та отримати посилання</button>
+﻿<section style="display: flex; justify-content: center; padding: 2rem;">
+    <div class="glass-card" style="width: 100%; max-width: 60rem;">
+        <h3 style="font-size: 3.2rem; margin-bottom: 2rem; font-weight: 700;">🛡️ Новий Секрет</h3>
 
-    <div id="result" class="mt-3" style="display:none;">
-        <label>Скопіюйте посилання:</label>
-        <div class="input-group">
-            <input type="text" id="shareUrl" class="form-control" readonly>
-            <button class="btn btn-success" onclick="copy()">Копіювати</button>
+        <textarea id="txt" class="form-control" rows="5" placeholder="Напишіть секретне повідомлення..."></textarea>
+        <input type="password" id="pwd" class="form-control" placeholder="Встановіть пароль доступу">
+
+        <button onclick="createSecret()" class="btn" style="width: 100%;">Зашифрувати та Створити</button>
+
+        <div id="result" style="display:none; margin-top: 3rem;">
+            <p style="font-size: 1.4rem; color: var(--main-color);">Посилання готове:</p>
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <input type="text" id="shareUrl" class="form-control" style="margin-bottom: 0;" readonly>
+                <button class="btn" onclick="copy()" style="padding: 1.2rem 1.5rem;"><i class='bx bx-copy'></i></button>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
 <script>
     async function createSecret() {
         const text = document.getElementById('txt').value;
         const password = document.getElementById('pwd').value;
-        const enc = new TextEncoder();
+        if(!text || !password) return alert("Заповніть усі поля!");
 
-        // Клієнтське шифрування
+        const enc = new TextEncoder();
         const keyMaterial = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]);
         const key = await crypto.subtle.deriveKey(
             { name: "PBKDF2", salt: enc.encode("salt-123"), iterations: 100000, hash: "SHA-256" },
             keyMaterial, { name: "AES-GCM", length: 256 }, false, ["encrypt"]
         );
+
         const iv = crypto.getRandomValues(new Uint8Array(12));
         const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, enc.encode(text));
 
@@ -43,7 +48,9 @@
     }
 
     function copy() {
-        navigator.clipboard.writeText(document.getElementById('shareUrl').value);
+        const url = document.getElementById('shareUrl');
+        url.select();
+        navigator.clipboard.writeText(url.value);
         alert("Скопійовано!");
     }
 </script>

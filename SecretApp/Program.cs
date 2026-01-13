@@ -4,7 +4,7 @@ using SecretApp.Data;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlite("Data Source=secrets.db"));
-
+builder.Services.AddHostedService<CleanupService>();
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
