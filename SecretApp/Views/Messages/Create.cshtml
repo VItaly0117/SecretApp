@@ -1,0 +1,49 @@
+﻿<div class="card p-4 shadow-sm mx-auto" style="max-width: 500px;">
+    <h3>Нове повідомлення</h3>
+    <textarea id="txt" class="form-control mb-2" rows="4" placeholder="Текст..."></textarea>
+    <input type="password" id="pwd" class="form-control mb-2" placeholder="Пароль">
+    <button onclick="createSecret()" class="btn btn-primary w-100">Створити та отримати посилання</button>
+
+    <div id="result" class="mt-3" style="display:none;">
+        <label>Скопіюйте посилання:</label>
+        <div class="input-group">
+            <input type="text" id="shareUrl" class="form-control" readonly>
+            <button class="btn btn-success" onclick="copy()">Копіювати</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function createSecret() {
+        const text = document.getElementById('txt').value;
+        const password = document.getElementById('pwd').value;
+        const enc = new TextEncoder();
+
+        // Клієнтське шифрування
+        const keyMaterial = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]);
+        const key = await crypto.subtle.deriveKey(
+            { name: "PBKDF2", salt: enc.encode("salt-123"), iterations: 100000, hash: "SHA-256" },
+            keyMaterial, { name: "AES-GCM", length: 256 }, false, ["encrypt"]
+        );
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, enc.encode(text));
+
+        const response = await fetch('/Messages/Save', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                encryptedData: btoa(String.fromCharCode(...new Uint8Array(encrypted))),
+                iv: btoa(String.fromCharCode(...iv)),
+                passwordHash: password
+            })
+        });
+        const data = await response.json();
+        document.getElementById('shareUrl').value = data.url;
+        document.getElementById('result').style.display = 'block';
+    }
+
+    function copy() {
+        navigator.clipboard.writeText(document.getElementById('shareUrl').value);
+        alert("Скопійовано!");
+    }
+</script>

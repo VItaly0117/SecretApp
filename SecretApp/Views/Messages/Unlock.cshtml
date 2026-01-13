@@ -1,0 +1,46 @@
+﻿@model Guid
+<div class="card p-4 shadow-sm mx-auto mt-5" style="max-width: 500px;">
+    <div id="lockSection">
+        <h3>🔒 Введіть пароль</h3>
+        <input type="password" id="p" class="form-control mb-2" placeholder="Пароль">
+        <button onclick="viewSecret()" class="btn btn-success w-100">Відкрити</button>
+    </div>
+
+    <div id="viewSection" style="display:none;">
+        <div class="alert alert-warning small">Повідомлення видалено з сервера. Ви бачите його востаннє.</div>
+        <h5>Зміст:</h5>
+        <div id="content" class="p-3 bg-light border rounded" style="white-space: pre-wrap;"></div>
+        <a href="/" class="btn btn-outline-primary mt-3">Закрити</a>
+    </div>
+</div>
+
+<script>
+    async function viewSecret() {
+        const pwd = document.getElementById('p').value;
+        const res = await fetch('/Messages/GetAndDestroy/@Model', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(pwd)
+        });
+
+        if(!res.ok) return alert("Невірний пароль або посилання вже недійсне.");
+        const data = await res.json();
+
+        try {
+            const enc = new TextEncoder();
+            const keyMaterial = await crypto.subtle.importKey("raw", enc.encode(pwd), "PBKDF2", false, ["deriveKey"]);
+            const key = await crypto.subtle.deriveKey(
+                { name: "PBKDF2", salt: enc.encode("salt-123"), iterations: 100000, hash: "SHA-256" },
+                keyMaterial, { name: "AES-GCM", length: 256 }, false, ["decrypt"]
+            );
+
+            const encryptedData = Uint8Array.from(atob(data.encryptedData), c => c.charCodeAt(0));
+            const iv = Uint8Array.from(atob(data.iv), c => c.charCodeAt(0));
+            const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, encryptedData);
+
+            document.getElementById('content').innerText = new TextDecoder().decode(decrypted);
+            document.getElementById('lockSection').style.display = 'none';
+            document.getElementById('viewSection').style.display = 'block';
+        } catch(e) { alert("Помилка дешифрування."); }
+    }
+</script>
